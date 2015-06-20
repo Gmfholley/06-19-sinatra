@@ -27,7 +27,7 @@ ID   Name     Number of seats   Number of staff     Number of movie slots per da
  LocationTime Class stored in locationtimes table
  Composite Key      Composite Key
  Foreign Key        Foreign Key   Foreign Key     
- Location           Timeslot      Movie                                     Number of Tickets sold
+ Location           TimeSlotslot      Movie                                     Number of Tickets sold
  	Purple			      12:00:00			Avengers: Age of Ultron           
  	Purple			      22:00:00			Avengers: Age of Ultron
  	Purple			      17:00:00			Avengers: Age of Ultron
@@ -46,5 +46,5 @@ ID   Name     Number of seats   Number of staff     Number of movie slots per da
   id      Studio
   
   
-  Timeslot Class stored in timeslots table
-  id      Timeslot
+  TimeSlotslot Class stored in timeslots table
+  id      TimeSlotslot

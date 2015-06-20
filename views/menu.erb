@@ -1,0 +1,7 @@
+<h1><%=@menu.title%></h1>
+ <ul>
+   <% @menu.menu_items.each do |item| %>
+     <a href = <%= item.method.method_name %>>/ <%= @class %> <li><%= item.user_message %></li></a>
+  <% end %>
+  <p></p>
+ </ul>

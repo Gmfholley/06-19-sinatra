@@ -8,10 +8,25 @@
 
 <!-- <body> -->
 
-<h1>Enter the variables of the <%= @class_name %> you want to create.</h1>
+<header>
+  <a href = "/home">home </a>
+  <br>
+  <a href = "/<%= params["something"] %> "><%=params["something"] %></a>
+</header>
+
+<body>
+  
+  <!--Show error messages -->
+  <% unless @m.errors.nil? %>
+    <% @m.errors.each do |error|   %>
+        <p><em>Error with <%= error[:variable] %>: <%= error[:message] %></em></p>
+    <% end %>
+  <% end %>
+  
+<h1>Enter the variables of the <%= @class_name %>.</h1>
 
 
-<%  %>
+
 <form action="/submit/<%=params["something"]%>">
 
 <!-- Show all non-foreign keys in an input field -->
@@ -37,11 +52,5 @@
   <input type = "submit">
 
 </form>
-<!--</body> -->
 
-<!--Show error messages -->
-<% unless @m.errors.nil? %>
-  <% @m.errors.each do |error|   %>
-      <p>Error with <%= error[:variable] %>: <%= error[:message] %></p>
-  <% end %>
-<% end %>
+</body>

@@ -11,7 +11,7 @@
 <h1><%=@menu.title%></h1>
  <ul>
    <% @menu.menu_items.each do |item| %> 
-     <li><a href = <%= "#{params["something"]}/#{item.method.method_name}" %>> <%= item.user_message %></a></li>
+     <li><%= item.user_message %></li>
   <% end %>
  </ul>
 

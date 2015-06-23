@@ -63,9 +63,10 @@ get "/submit/:something" do
   @class_name = slash_to_class_names[params["something"]]
   
   @m = @class_name.new(params)
-  binding.pry
+  
   if @m.save_record
-    "Successfully saved!"
+    @message = "Successfully saved!"
+    erb :message
   else
     @foreign_key_choices = []
     all_foreign_keys = @m.foreign_keys
@@ -78,12 +79,24 @@ get "/submit/:something" do
 end
 
 
+get "/show/:something" do
+
+  @class_name = slash_to_class_names[params["something"]]
+  m = TheatreManager.new()
+  
+  @menu = m.user_choice_of_object_in_class(@class_name)
+  @menu.title = "Here are all the #{params["something"]}."
+  erb :menu_without_links
+  
+end
+
 get "/delete/:something" do
 
   @class_name = slash_to_class_names[params["something"]]
   m = TheatreManager.new()
   
   @menu = m.user_choice_of_object_in_class(@class_name)
+  @menu.title = "Which #{params["something"]} do you want to delete?"
   erb :menu
   
 end
@@ -93,30 +106,30 @@ get "/delete/:something/:x" do
   
   @class_name = slash_to_class_names[params["something"]]
   if @class_name.delete_record(params["x"].to_i)
-    "Successfully deleted."
+    @message = "Successfully deleted."
+    erb :message
   else
-    "This object was not found or was in another table.  Not deleted."
+    @message = "This object was not found or was in another table.  Not deleted."
+    erb :message
   end
   
   #erb :menu
 end
 
-
 get "/update/:something" do
   @class_name = slash_to_class_names[params["something"]]
-  m = TheatreManager.new()
-  
+  m = TheatreManager.new()  
   @menu = m.user_choice_of_object_in_class(@class_name)
-  
+  @menu.title = "Which #{@class_name} do you want to update?"
   erb :menu
 end
 
 get "/update/:something/:x" do
   #Get class name
   @class_name = slash_to_class_names[params["something"]]
-  # create an object so you can get its instance variables
+  
+  # create the object
   @m = @class_name.create_from_database(params["x"].to_i)
-
   # get foreign key names in this object and all possible values of the foreign key
   @foreign_key_choices = []
   all_foreign_keys = @m.foreign_keys
@@ -127,11 +140,105 @@ get "/update/:something/:x" do
   erb :create
 end
 
+get "/get_time_location/:something" do
+ 
+  @class_name = slash_to_class_names[params["something"]]
+  #params["something"] = "get_time_location_for_movie"
+  m = TheatreManager.new()  
+  @menu = m.user_choice_of_object_in_class(@class_name)
+  @menu.title = "Which #{@class_name} do you want time/location information for?"
+  erb :menu
+end
+
+get "/get_time_location/:something/:x" do
+  
+  @class_name = slash_to_class_names[params["something"]]
+  @m = @class_name.create_from_database(params["x"].to_i)
+  @menu = Menu.new("The times and locations for #{@m.name} are:")
+  
+  @m.location_times.each do |lt|
+    @menu.add_menu_item(user_message: lt.to_s)
+  end
+  
+  erb :menu_without_links
+end
+
+
+get "/get_available_locations" do
+  
+  m = TheatreManager.new
+  @menu = m.available
+  params["something"] = "get_sold_time_locations"
+  erb :menu
+end
+
+get "/get_available_locations/:something" do
+  if params["something"] == "available"
+    @m = Location.where_available(true)
+  else
+    @m = Location.where_available(false)
+  end
+  
+  @menu = Menu.new("The #{params["something"]} times and locations are:")
+  @m.each do |lt|
+    @menu.add_menu_item(user_message: lt.to_s)
+  end
+  
+  erb :menu_without_links
+end
+
+get "/get_sold_time_locations" do
+  
+  m = TheatreManager.new
+  @menu = m.sold_out
+  params["something"] = "get_sold_time_locations"
+  erb :menu
+end
+
+get "/get_sold_time_locations/:x" do
+  if params["x"] == "sold_out"
+    @m = LocationTime.where_sold_out(true)
+  else
+    @m = LocationTime.where_sold_out(false)
+  end
+  
+  @menu = Menu.new("The #{params["x"]} times and locations are:")
+  @m.each do |lt|
+    @menu.add_menu_item(user_message: lt.to_s)
+  end
+  
+  erb :menu_without_links
+end
+
+get "/get_movies_like_this" do
+  
+  m = TheatreManager.new
+  @menu = m.movie_type_lookup_menu
+  params["something"] = "get_movies_like_this"
+  erb :menu
+end
+
+get "/get_movies_like_this/:x" do
+  if params["x"] == "sold_out"
+    @m = LocationTime.where_sold_out(true)
+  else
+    @m = LocationTime.where_sold_out(false)
+  end
+  
+  @menu = Menu.new("The #{params["something"]} times and locations are:")
+  @m.each do |lt|
+    @menu.add_menu_item(user_message: lt.to_s)
+  end
+  
+  erb :menu_without_links
+end
+
+
 get "/:other" do
   erb :not_appearing
 end
 
-
+###################
 def slash_to_class_names
-  {"theatre" => Location, "location_time" => LocationTime, "movie" => Movie}
+  {"theatre" => Location, "location_time" => LocationTime, "movie" => Movie, "time" => TimeSlot}
 end

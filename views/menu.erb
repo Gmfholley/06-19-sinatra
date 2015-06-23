@@ -4,9 +4,7 @@
 
 <h1><%=@menu.title%></h1>
  <ul>
-   <% @menu.menu_items.each do |item| %>
-    
-     <a href = <%= "#{item.method.method_name}" %> ><li><%= item.user_message %></li></a>
+   <% @menu.menu_items.each do |item| %> 
+     <li><a href = <%= "#{item.method.method_name}" %>> <%= item.user_message %></a></li>
   <% end %>
-  <p></p>
  </ul>

@@ -61,8 +61,9 @@ end
 
 get "/submit/:something" do
   @class_name = slash_to_class_names[params["something"]]
-
+  
   @m = @class_name.new(params)
+  binding.pry
   if @m.save_record
     "Successfully saved!"
   else
@@ -90,7 +91,7 @@ end
 
 get "/delete/:something/:x" do
   
-  @class_name = Object.const_get(params["something"])
+  @class_name = slash_to_class_names[params["something"]]
   if @class_name.delete_record(params["x"].to_i)
     "Successfully deleted."
   else
@@ -112,7 +113,7 @@ end
 
 get "/update/:something/:x" do
   #Get class name
-  @class_name = Object.const_get(params["something"])
+  @class_name = slash_to_class_names[params["something"]]
   # create an object so you can get its instance variables
   @m = @class_name.create_from_database(params["x"].to_i)
 

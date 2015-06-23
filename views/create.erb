@@ -1,19 +1,46 @@
-<! Passed three parameters to dynamically create the "create" page for any object>
+<!-- Passed three parameters to dynamically create the "create" page for any object>
 <! Objects must have the DatabaseConnector module included and must have Foreign Keys stored as ForeignKey object, rather than an Integer, etc.>
 
 <! @foreign_key_fields   - An Array of the field names of parameters that are ForeignKeys>
-<! @foreign_key_choices -- An Array of Arrays.  The inner Array contains all possible objects for this foreign key.  >
+<! @foreign_key_choices  - An Array of Arrays.  The inner Array contains all possible objects for this foreign key.  >
 <! @non_foreign_key_fields - An Array of the field names of non-foreign keys. >
-<! >
+<!-- >
+
+<!-- <body> -->
+
+<h1>Enter the variables of the <%= @class_name %> you want to create.</h1>
 
 
-<form action="/<%=params["something"]%>">
-  <% @foreign_key_fields.each_with_index do |foreign_key, x| %>
-    <select name = <%= foreign_key %>>
+
+<form action="/submit/<%=params["something"]%>">
+
+<!-- Show all non-foreign keys in an input field -->
+  <% @m.non_foreign_key_fields.each do |field| %>
+    <p><input type= "text" name = <%= field %> field placeholder= "Type in the <%= field %>" value = "<%= @m.send(field) %>" ></input></p>
+  <% end %> 
+
+
+  <!--Show all foreign keys in a select field -->
+  <% @m.foreign_key_fields.each_with_index do |foreign_key, x| %>
+    <p><label for=" <%= foreign_key %>  ">Select your <%= foreign_key %>:</label><select name = <%= foreign_key %>>
       <% @foreign_key_choices[x].each do |choice| %>
-        <option value = <%= choice.id %> > <%= choice.to_s %></option>
+        <option value = <%= choice.id %>
+          <% if @m.send(foreign_key).id == choice.id %>
+            selected
+          <% end %>> <%= choice.name %></option>
       <% end %>
-    </select>
+    </select></p>
   <% end %>
 
+
+  <input type = "submit">
+
 </form>
+<!--</body> -->
+
+<!--Show error messages -->
+<% unless @m.errors.nil? %>
+  <% @m.errors.each do |error|   %>
+      <p>Error with <%= error[:variable] %>: <%= error[:message] %></p>
+  <% end %>
+<% end %>

@@ -43,24 +43,85 @@ get "/analyze" do
   erb :menu
 end
 
-get "/create/:something" do
+get "/create/:something/:x" do
   #Get class name
   @class_name = slash_to_class_names[params["something"]]
   
   # create an object so you can get its instance variables
-  m = @class_name.new
-  
+  @m = @class_name.create_from_database(params["x"].to_i)
   # get foreign key names in this object and all possible values of the foreign key
   @foreign_key_choices = []
-  all_foreign_keys = m.foreign_keys
+  all_foreign_keys = @m.foreign_keys
   all_foreign_keys.each do |foreign_key|
     @foreign_key_choices << foreign_key.all_from_class
   end
-  @foreign_key_fields = m.foreign_key_fields
   
-  @non_foreign_key_fields = m.non_foreign_key_fields
-  binding.pry
-  @table_info = @class_name.table_info
+  erb :create
+end
+
+get "/submit/:something" do
+  @class_name = slash_to_class_names[params["something"]]
+
+  @m = @class_name.new(params)
+  if @m.save_record
+    "Successfully saved!"
+  else
+    @foreign_key_choices = []
+    all_foreign_keys = @m.foreign_keys
+    all_foreign_keys.each do |foreign_key|
+      @foreign_key_choices << foreign_key.all_from_class
+    end   
+    erb :create
+  end
+  
+end
+
+
+get "/delete/:something" do
+
+  @class_name = slash_to_class_names[params["something"]]
+  m = TheatreManager.new()
+  
+  @menu = m.user_choice_of_object_in_class(@class_name)
+  erb :menu
+  
+end
+
+
+get "/delete/:something/:x" do
+  
+  @class_name = Object.const_get(params["something"])
+  if @class_name.delete_record(params["x"].to_i)
+    "Successfully deleted."
+  else
+    "This object was not found or was in another table.  Not deleted."
+  end
+  
+  #erb :menu
+end
+
+
+get "/update/:something" do
+  @class_name = slash_to_class_names[params["something"]]
+  m = TheatreManager.new()
+  
+  @menu = m.user_choice_of_object_in_class(@class_name)
+  
+  erb :menu
+end
+
+get "/update/:something/:x" do
+  #Get class name
+  @class_name = Object.const_get(params["something"])
+  # create an object so you can get its instance variables
+  @m = @class_name.create_from_database(params["x"].to_i)
+
+  # get foreign key names in this object and all possible values of the foreign key
+  @foreign_key_choices = []
+  all_foreign_keys = @m.foreign_keys
+  all_foreign_keys.each do |foreign_key|
+    @foreign_key_choices << foreign_key.all_from_class
+  end
   
   erb :create
 end

@@ -12,7 +12,6 @@ class LocationTime < ActiveRecord::Base
   validate :num_tickets_sold_greater_than_zero_and_less_than_max_num
   
   
-  
   # if the number of seats is below zero, it adds an error
   #
   # returns errors Array

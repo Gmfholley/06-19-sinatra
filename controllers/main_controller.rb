@@ -47,6 +47,22 @@ get "/create/:something/:x" do
   erb :create
 end
 
+get "/create/:something" do
+  #Get class name
+  @class_name = slash_to_class_names[params["something"]]
+  
+  # create an object so you can get its instance variables
+  @obj = @class_name.new()
+  # get foreign key names in this object and all possible values of the foreign key
+  # @foreign_key_choices = []
+  # all_foreign_keys = @obj.foreign_keys
+  # all_foreign_keys.each do |foreign_key|
+  #   @foreign_key_choices << foreign_key.all_from_class
+  # end
+  
+  erb :create
+end
+
 get "/submit/:something" do
   @class_name = slash_to_class_names[params["something"]]
   
@@ -120,8 +136,7 @@ get "/delete/:something/:x" do
 end
 
 get "/update/:something" do
-  @class_name = slash_to_class_names[params["something"]]
-  ()  
+  @class_name = slash_to_class_names[params["something"]]  
   @menu = user_choice_of_object_in_class(@class_name)
   @menu.title = "Which #{@class_name} do you want to update?"
   erb :menu
@@ -130,16 +145,8 @@ end
 get "/update/:something/:x" do
   #Get class name
   @class_name = slash_to_class_names[params["something"]]
-  
   # create the object
   @obj = @class_name.find(params["x"].to_i)
-  # get foreign key names in this object and all possible values of the foreign key
-  @foreign_key_choices = []
-  all_foreign_keys = @obj.foreign_keys
-  all_foreign_keys.each do |foreign_key|
-    @foreign_key_choices << foreign_key.all_from_class
-  end
-  
   erb :create
 end
 

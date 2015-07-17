@@ -17,7 +17,7 @@ module MenuObjectHelper
     # calls the theatre menu
     def movie
         movie = Menu.new("What would you like to do with movies?")
-        movie.add_menu_item({key_user_returns: 1, user_message: "Create a movie.", do_if_chosen: "create/movie/x?"})
+        movie.add_menu_item({key_user_returns: 1, user_message: "Create a movie.", do_if_chosen: "create/movie"})
         movie.add_menu_item({key_user_returns: 2, user_message: "Update a movie.", do_if_chosen: "update/movie", parameters: [Movie, "movie"]})
         movie.add_menu_item({key_user_returns: 3, user_message: "Show me movies.", do_if_chosen:"show/movie", parameters: [Movie, "movie"]})
         movie.add_menu_item({key_user_returns: 4, user_message: "Delete a movie.", do_if_chosen:"delete/movie", parameters: [Movie, "movie"]})
@@ -30,7 +30,7 @@ module MenuObjectHelper
     # runs the theatre menu
     def theatre
         theatre = Menu.new("What would you like to do with theatres?")
-        theatre.add_menu_item({key_user_returns: 1, user_message: "Create a theatre.", do_if_chosen: "create/theatre/x?"})
+        theatre.add_menu_item({key_user_returns: 1, user_message: "Create a theatre.", do_if_chosen: "create/theatre"})
         theatre.add_menu_item({key_user_returns: 2, user_message: "Update a theatre.", do_if_chosen: "update/theatre", parameters: [Location, "theatre"]})
         theatre.add_menu_item({key_user_returns: 3, user_message: "Show me theatres.", do_if_chosen: "show/theatre", parameters: [Location, "theatre"]})
         theatre.add_menu_item({key_user_returns: 4, user_message: "Delete a theatre.", do_if_chosen:"delete/theatre", parameters: [Location, "theatre"]})
@@ -44,7 +44,7 @@ module MenuObjectHelper
     def location_time
       loc_time = Menu.new("What would you like to do with movie time/theatre slots?")
       loc_time.add_menu_item({key_user_returns: 1, user_message: "Create a new theatre/time slot.", 
-        do_if_chosen: "create/location_time/x?", parameters:[LocationTime, "location_time"]})
+        do_if_chosen: "create/location_time", parameters:[LocationTime, "location_time"]})
       loc_time.add_menu_item({key_user_returns: 2, user_message: "Update a theatre/time slot.", 
         do_if_chosen: "update/location_time", parameters:[LocationTime, "location_time"]})
       loc_time.add_menu_item({key_user_returns: 3, user_message: "Show me theatre/time slot.", 

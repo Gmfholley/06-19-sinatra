@@ -1,6 +1,6 @@
 get "/home" do
-  m = TheatreManager.new
-  @menu = m.home
+  @menu = home
+  binding.pry
   erb :menu
 end
 
@@ -252,10 +252,8 @@ get "/get_num_staff_needed" do
 end
 
 get "/get_num_staff_needed/:x" do
-  binding.pry
   params["something"] = "analyze"
   m = TimeSlot.create_from_database(params["x"].to_i)
-  binding.pry
   @message = "You will need #{m.num_staff_needed} staff members for the #{m.name} time slot."
   erb :message
 

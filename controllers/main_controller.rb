@@ -36,47 +36,47 @@ get "/create/:something/:x" do
   @class_name = slash_to_class_names[params["something"]]
   
   # create an object so you can get its instance variables
-  @m = @class_name.new()
+  @obj = @class_name.find(params["x"])
   # get foreign key names in this object and all possible values of the foreign key
-  @foreign_key_choices = []
-  all_foreign_keys = @m.foreign_keys
-  all_foreign_keys.each do |foreign_key|
-    @foreign_key_choices << foreign_key.all_from_class
-  end
+  # @foreign_key_choices = []
+  # all_foreign_keys = @obj.foreign_keys
+  # all_foreign_keys.each do |foreign_key|
+  #   @foreign_key_choices << foreign_key.all_from_class
+  # end
   
-  erb :create
+  erb :create_2
 end
 
 get "/submit/:something" do
   @class_name = slash_to_class_names[params["something"]]
   
   if params["id"] == ""
-    @m = @class_name.new(params)
+    @obj = @class_name.new(params)
   
-    if @m.save
+    if @obj.save
       @message = "Successfully saved!"
       erb :message
     else
-      @foreign_key_choices = []
-      all_foreign_keys = @m.foreign_keys
-      all_foreign_keys.each do |foreign_key|
-        @foreign_key_choices << foreign_key.all_from_class
-      end   
-      erb :create
+      # @foreign_key_choices = []
+      # all_foreign_keys = @obj.foreign_keys
+      # all_foreign_keys.each do |foreign_key|
+      #   @foreign_key_choices << foreign_key.all_from_class
+      # end 
+      erb :create_2
     end
   else
-    @m = @class_name.find(params["id"].to_i)
-    @m.update(params)
-    if @m.save
+    @obj = @class_name.find(params["id"].to_i)
+    @obj.update(params)
+    if @obj.save
       @message = "Successfully saved!"
       erb :message
     else
-      @foreign_key_choices = []
-      all_foreign_keys = @m.foreign_keys
-      all_foreign_keys.each do |foreign_key|
-        @foreign_key_choices << foreign_key.all_from_class
-      end   
-      erb :create
+      # @foreign_key_choices = []
+      # all_foreign_keys = @obj.foreign_keys
+      # all_foreign_keys.each do |foreign_key|
+      #   @foreign_key_choices << foreign_key.all_from_class
+      # end
+      erb :create_2
     end
   end  
 end
@@ -132,10 +132,10 @@ get "/update/:something/:x" do
   @class_name = slash_to_class_names[params["something"]]
   
   # create the object
-  @m = @class_name.find(params["x"].to_i)
+  @obj = @class_name.find(params["x"].to_i)
   # get foreign key names in this object and all possible values of the foreign key
   @foreign_key_choices = []
-  all_foreign_keys = @m.foreign_keys
+  all_foreign_keys = @obj.foreign_keys
   all_foreign_keys.each do |foreign_key|
     @foreign_key_choices << foreign_key.all_from_class
   end
@@ -156,10 +156,10 @@ end
 get "/get_time_location/:something/:x" do
   
   @class_name = slash_to_class_names[params["something"]]
-  @m = @class_name.find(params["x"].to_i)
-  @menu = Menu.new("The times and locations for #{@m.name} are:")
+  @obj = @class_name.find(params["x"].to_i)
+  @menu = Menu.new("The times and locations for #{@obj.name} are:")
   
-  @m.location_times.each do |lt|
+  @obj.location_times.each do |lt|
     @menu.add_menu_item(user_message: lt.to_s)
   end
   
@@ -176,13 +176,13 @@ end
 
 get "/get_available_locations/:something" do  
   if params["something"] == "available"
-    @m = Location.where_available(true)
+    @obj = Location.where_available(true)
   else
-    @m = Location.where_available(false)
+    @obj = Location.where_available(false)
   end
   
   @menu = Menu.new("The #{params["something"].humanize.downcase} times and locations are:")
-  @m.each do |lt|
+  @obj.each do |lt|
     @menu.add_menu_item(user_message: lt.to_s)
   end
   
@@ -199,13 +199,13 @@ end
 
 get "/get_sold_time_locations/:x" do
   if params["x"] == "sold_out"
-    @m = LocationTime.where_sold_out(true)
+    @obj = LocationTime.where_sold_out(true)
   else
-    @m = LocationTime.where_sold_out(false)
+    @obj = LocationTime.where_sold_out(false)
   end
   
   @menu = Menu.new("The #{params["x"]} times and locations are:")
-  @m.each do |lt|
+  @obj.each do |lt|
     @menu.add_menu_item(user_message: lt.to_s)
   end
   

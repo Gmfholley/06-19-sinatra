@@ -1,56 +1,49 @@
-<!-- Passed three parameters to dynamically create the "create" page for any object>
-<! Objects must have the DatabaseConnector module included and must have Foreign Keys stored as ForeignKey object, rather than an Integer, etc.>
 
-<! @foreign_key_fields   - An Array of the field names of parameters that are ForeignKeys>
-<! @foreign_key_choices  - An Array of Arrays.  The inner Array contains all possible objects for this foreign key.  >
-<! @non_foreign_key_fields - An Array of the field names of non-foreign keys. >
-<!-- >
+<!--display errors -->
+<ul>
+<% @obj.errors.each do |error| %>
+  <li><%= error.message %></li>
+<% end %>  
+</ul>
 
-<!-- <body> -->
+<form id="form" action="/<%= @class_name.name.downcase %>/submit" method="post">
 
-<header>
-  <a href = "/home">home </a>
-  <br>
-  <a href = "/<%= params["something"] %> "><%=params["something"] %></a>
-</header>
-
-<body>
+<!--Add hidden id field -->
+  <input type="hidden" name="my_object[id]" value=<%= @obj.id %>></input>
   
-  <!--Show error messages -->
-  <% unless @m.errors.nil? %>
-    <% @m.errors.each do |error|   %>
-        <p><em>Error with <%= error[:variable] %>: <%= error[:message] %></em></p>
+  
+<!-- Display non_foreign_keys in their own input field -->
+<!--@obj.attributes brings back an Array of Arrays, the first item being the parameter name and the second item the value -->
+  <% @obj.attributes.each do |attribute| %>
+    <% if !attribute[0].include?("id") %> 
+<!--Do not display foreign keys in a field, as they don't make sense and we don't want people to change them directly. -->
+      <p>
+        <label for="<%= attribute[0] %>">Enter the <%= attribute[0].humanize %></label>
+        <input type="text" name="my_object[<%= attribute[0] %>]" placeholder="Type <%= attribute[0]%> here." value="<%= attribute[1] %>"></input>
+      </p>
     <% end %>
   <% end %>
-  
-<h1>Enter the variables of the <%= @class_name %>.</h1>
 
 
-
-<form action="/submit/<%=params["something"]%>">
-
-<!-- Show all non-foreign keys in an input field -->
-  <% @m.non_foreign_key_fields.each do |field| %>
-    <p><label for = "<%= field %> ">Select your <%= field %>:</label><input type= "text" name = <%= field %> field placeholder= "Type in the <%= field %>" value = "<%= @m.send(field) %>" ></input></p>
-  <% end %> 
-
-  <input type= "hidden" name = "id" value = "<%= @m.id %>">
-  
-  <!--Show all foreign keys in a select field -->
-  <% @m.foreign_key_fields.each_with_index do |foreign_key, x| %>
-    <p><label for=" <%= foreign_key %>  ">Select your <%= foreign_key %>:</label><select name = <%= foreign_key %>>
-      <% @foreign_key_choices[x].each do |choice| %>
-        <option value = <%= choice.id %>
-          <% if @m.send(foreign_key).id == choice.id %>
-            selected
-          <% end %>> <%= choice.name %></option>
+<!--Display foreign keys in selectors selected for the current one. -->
+<!--reflect_on_all_associations with parameter :belongs_to brings back an Array of Association objects -->
+  <% @associations = @class_name.reflect_on_all_associations(:belongs_to) %>
+  <% if @associations.respond_to? :each %>
+      <% @associations.each do |association| %>
+      
+<!--association.foreign_key is the name of the foreign key in this object's table -->
+        <p>
+          <select name="my_object[<%= association.foreign_key %>]">
+<!--association.class_name is the String of the class name.  Convert to the class itself and run 'all' to cycle through the possible numbers -->
+          <% association.class_name.constantize.all.each do | foreign_key| %>
+<!-- if this object's foreign key matches the id of this foreign key, mark this option as selected -->
+              <option value="<%= foreign_key.id %>" <%= "selected" if @obj.send(association.foreign_key) == foreign_key.id %>><%= foreign_key.name %></option>
+          <% end %>
+          </select>
+        </p>
       <% end %>
-    </select></p>
   <% end %>
-
-
-  <input type = "submit">
-
+  
+  <button type="submit">Submit Changes</button>
+  
 </form>
-
-</body>

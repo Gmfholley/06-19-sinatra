@@ -4,6 +4,7 @@ require 'pry'
 require 'sinatra/reloader'
 require 'active_support.rb'
 require 'active_support/core_ext/object/blank.rb'
+require 'sqlite3'
 
 
 require_relative "database_setup.rb"
@@ -17,7 +18,7 @@ require_relative 'models/location.rb'
 require_relative 'models/location_time.rb'
 
 #controllers
-require_relative 'controllers/defined_menu_helpers'
+require_relative 'controllers/defined_menu_helper.rb'
 require_relative 'controllers/main_controller.rb'
 
 helpers MenuHelper

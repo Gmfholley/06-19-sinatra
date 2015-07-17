@@ -1,5 +1,5 @@
 ActiveRecord::Base.establish_connection(
-  :adapter => "sqlite",
+  :adapter => "sqlite3",
   :database  => "movies.db"
 )
 
@@ -26,9 +26,9 @@ unless ActiveRecord::Base.connection.table_exists?(:movies)
   ActiveRecord::Base.connection.create_table :movies do |t|
     t.string :name
     t.string :description
-    t.length :integer
-    t.studio_id :integer
-    t.rating_id :integer
+    t.integer :length
+    t.integer :studio_id
+    t.integer :rating_id
   end  
 end
 

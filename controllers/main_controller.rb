@@ -44,7 +44,7 @@ get "/create/:something/:x" do
   #   @foreign_key_choices << foreign_key.all_from_class
   # end
   
-  erb :create_2
+  erb :create
 end
 
 get "/submit/:something" do
@@ -62,7 +62,7 @@ get "/submit/:something" do
       # all_foreign_keys.each do |foreign_key|
       #   @foreign_key_choices << foreign_key.all_from_class
       # end 
-      erb :create_2
+      erb :create
     end
   else
     @obj = @class_name.find(params["id"].to_i)
@@ -76,7 +76,7 @@ get "/submit/:something" do
       # all_foreign_keys.each do |foreign_key|
       #   @foreign_key_choices << foreign_key.all_from_class
       # end
-      erb :create_2
+      erb :create
     end
   end  
 end

@@ -17,7 +17,7 @@ end
 
 unless ActiveRecord::Base.connection.table_exists?(:time_slots)
   ActiveRecord::Base.connection.create_table :time_slots do |t|
-    t.string :time_slot
+    t.string :name
   end  
 end
 

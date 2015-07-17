@@ -3,7 +3,7 @@ class TimeSlot < ActiveRecord::Base
   has_and_belongs_to_many :locations, through: :location_times
   
   
-  validates :time_slot, presence: true
+  validates :name, presence: true
   
   # returns the total staff needed for a particular time slot
   #

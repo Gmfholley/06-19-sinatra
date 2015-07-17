@@ -53,7 +53,7 @@ class Location < ActiveRecord::Base
   #
   # returns Integer
   def self.max_num_time_slots
-    CONNECTION.execute("SELECT COUNT(*) FROM time_slots;").first[0]
+    ActiveRecord::Base.connection.execute("SELECT COUNT(*) FROM time_slots;").first[0]
   end  
   
 end

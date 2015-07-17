@@ -1,33 +1,32 @@
 get "/home" do
   @menu = home
-  binding.pry
   erb :menu
 end
 
 get "/movie" do
-  m = TheatreManager.new
-  @menu = m.movie
+  
+  @menu = movie
   @class_name = Movie
-  erb :menu_without_links
+  erb :menu
 end
 
 get "/theatre" do
-  m = TheatreManager.new
-  @menu = m.theatre
+  
+  @menu = theatre
   @class_name = Location
   erb :menu
 end
 
 get "/location_time" do
-  m = TheatreManager.new
-  @menu = m.location_time
+  
+  @menu = location_time
   @class_name = LocationTime
   erb :menu
 end
 
 get "/analyze" do
-  m = TheatreManager.new
-  @menu = m.analyze
+  
+  @menu = analyze
   @next_slash = "/analyze"
   erb :menu
 end
@@ -37,7 +36,7 @@ get "/create/:something/:x" do
   @class_name = slash_to_class_names[params["something"]]
   
   # create an object so you can get its instance variables
-  @m = @class_name.create_from_database(params["x"].to_i)
+  @m = @class_name.new()
   # get foreign key names in this object and all possible values of the foreign key
   @foreign_key_choices = []
   all_foreign_keys = @m.foreign_keys
@@ -86,9 +85,9 @@ end
 get "/show/:something" do
 
   @class_name = slash_to_class_names[params["something"]]
-  m = TheatreManager.new()
+  ()
   
-  @menu = m.user_choice_of_object_in_class(@class_name)
+  @menu = user_choice_of_object_in_class(@class_name)
   @menu.title = "Here are all the #{params["something"].pluralize}."
   erb :menu_without_links
   
@@ -97,9 +96,9 @@ end
 get "/delete/:something" do
 
   @class_name = slash_to_class_names[params["something"]]
-  m = TheatreManager.new()
+  ()
   
-  @menu = m.user_choice_of_object_in_class(@class_name)
+  @menu = user_choice_of_object_in_class(@class_name)
   @menu.title = "Which #{params["something"]} do you want to delete?"
   erb :menu
   
@@ -109,7 +108,7 @@ end
 get "/delete/:something/:x" do
   
   @class_name = slash_to_class_names[params["something"]]
-  if @class_name.delete_record(params["x"].to_i)
+  if @class_name.delete(params["x"].to_i)
     @message = "Successfully deleted."
     erb :message
   else
@@ -122,8 +121,8 @@ end
 
 get "/update/:something" do
   @class_name = slash_to_class_names[params["something"]]
-  m = TheatreManager.new()  
-  @menu = m.user_choice_of_object_in_class(@class_name)
+  ()  
+  @menu = user_choice_of_object_in_class(@class_name)
   @menu.title = "Which #{@class_name} do you want to update?"
   erb :menu
 end
@@ -133,7 +132,7 @@ get "/update/:something/:x" do
   @class_name = slash_to_class_names[params["something"]]
   
   # create the object
-  @m = @class_name.create_from_database(params["x"].to_i)
+  @m = @class_name.find(params["x"].to_i)
   # get foreign key names in this object and all possible values of the foreign key
   @foreign_key_choices = []
   all_foreign_keys = @m.foreign_keys
@@ -148,8 +147,8 @@ get "/get_time_location/:something" do
  
   @class_name = slash_to_class_names[params["something"]]
   #params["something"] = "get_time_location_for_movie"
-  m = TheatreManager.new()  
-  @menu = m.user_choice_of_object_in_class(@class_name)
+  ()  
+  @menu = user_choice_of_object_in_class(@class_name)
   @menu.title = "Which #{@class_name} do you want time/location information for?"
   erb :menu
 end
@@ -157,7 +156,7 @@ end
 get "/get_time_location/:something/:x" do
   
   @class_name = slash_to_class_names[params["something"]]
-  @m = @class_name.create_from_database(params["x"].to_i)
+  @m = @class_name.find(params["x"].to_i)
   @menu = Menu.new("The times and locations for #{@m.name} are:")
   
   @m.location_times.each do |lt|
@@ -169,8 +168,8 @@ end
 
 
 get "/get_available_locations" do
-  m = TheatreManager.new
-  @menu = m.available
+  
+  @menu = available
   params["something"] = "get_available_locations"
   erb :menu
 end
@@ -192,8 +191,8 @@ end
 
 get "/get_sold_time_locations" do
   
-  m = TheatreManager.new
-  @menu = m.sold_out
+  
+  @menu = sold_out
   params["something"] = "get_sold_time_locations"
   erb :menu
 end
@@ -215,16 +214,16 @@ end
 
 get "/get_movies_like_this" do
   
-  m = TheatreManager.new
-  @menu = m.movie_type_lookup_menu
+  
+  @menu = movie_type_lookup_menu
   params["something"] = "get_movies_like_this"
   erb :menu
 end
 
 get "/get_movies_like_this/:something" do
   @class_name = slash_to_class_names[params["something"]]
-  m = TheatreManager.new()  
-  @menu = m.user_choice_of_object_in_class(@class_name)
+  ()  
+  @menu = user_choice_of_object_in_class(@class_name)
   @menu.title = "Which #{@class_name} do you want to look up?"
   erb :menu
 end
@@ -243,8 +242,8 @@ end
 
 get "/get_num_staff_needed" do
   @class_name = TimeSlot
-  m = TheatreManager.new()  
-  @menu = m.user_choice_of_object_in_class(@class_name)
+  ()  
+  @menu = user_choice_of_object_in_class(@class_name)
   @menu.title = "Which #{@class_name} do you want to look up the number of staff for?"
   params["something"] = "get_num_staff_needed"
   erb :menu
@@ -253,7 +252,7 @@ end
 
 get "/get_num_staff_needed/:x" do
   params["something"] = "analyze"
-  m = TimeSlot.create_from_database(params["x"].to_i)
+  m = TimeSlot.find(params["x"].to_i)
   @message = "You will need #{m.num_staff_needed} staff members for the #{m.name} time slot."
   erb :message
 

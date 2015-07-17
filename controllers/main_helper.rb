@@ -110,7 +110,8 @@ module MenuObjectHelper
       create_menu = Menu.new("Which #{class_object.name} do you want to look up?")
       all = class_object.all
       all.each_with_index do |object, x|
-        create_menu.add_menu_item({key_user_returns: x + 1, user_message: object.to_s, do_if_chosen: "#{object.id}"})
+        object_to_s = object.attributes.map{|k,v| "#{k}: #{v}"}.join(', ')
+        create_menu.add_menu_item({key_user_returns: x + 1, user_message: object_to_s, do_if_chosen: "#{object.id}"})
       end
       create_menu
     end

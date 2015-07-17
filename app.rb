@@ -4,7 +4,7 @@ require 'sinatra/reloader'
 require 'active_support.rb'
 require 'active_support/core_ext/object/blank.rb'
 require 'sqlite3'
-
+require 'pry'
 
 require_relative "database_setup.rb"
 

@@ -1,5 +1,5 @@
 class TimeSlot < ActiveRecord::Base
-  has_and_belongs_to_many :movies, through :location_times
+  has_and_belongs_to_many :movies, through: :location_times
   
   validates :time_slot, presence: true
   

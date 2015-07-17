@@ -1,6 +1,6 @@
 class Location < ActiveRecord::Base
   has_and_belongs_to_many :movies, through: :location_times
-  has_many :time_slots
+  has_and_belongs_to_many :time_slots, through: :location_times
   
   
   validates :name, presence: true

@@ -3,7 +3,7 @@ class Movie < ActiveRecord::Base
   belongs_to :studio
   
   has_and_belongs_to_many :locations, through: :location_times
-  
+  has_and_belongs_to_many :time_slots, through: :location_times  
   
   validates :name, presence: true
   validates :description, presence: true

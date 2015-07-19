@@ -171,9 +171,9 @@ get "/get_time_location/:something/:x" do
   @class_name = slash_to_class_names[params["something"]]
   @obj = @class_name.find(params["x"].to_i)
   @menu = Menu.new("The times and locations for #{@obj.name} are:")
-  
   @obj.location_times.each do |lt|
-    @menu.add_menu_item(user_message: lt.to_s)
+    object_to_s = lt.attributes.map{|k,v| "#{k}: #{v}"}.join(', ')
+    @menu.add_menu_item(user_message: object_to_s)
   end
   
   erb :menu_without_links
@@ -195,8 +195,9 @@ get "/get_available_locations/:something" do
   end
   
   @menu = Menu.new("The #{params["something"].humanize.downcase} times and locations are:")
-  @obj.each do |lt|
-    @menu.add_menu_item(user_message: lt.to_s)
+  @obj.location_times.each do |lt|
+    object_to_s = lt.attributes.map{|k,v| "#{k}: #{v}"}.join(', ')
+    @menu.add_menu_item(user_message: object_to_s)
   end
   
   erb :menu_without_links
@@ -218,8 +219,9 @@ get "/get_sold_time_locations/:x" do
   end
   
   @menu = Menu.new("The #{params["x"]} times and locations are:")
-  @obj.each do |lt|
-    @menu.add_menu_item(user_message: lt.to_s)
+  @obj.location_times.each do |lt|
+    object_to_s = lt.attributes.map{|k,v| "#{k}: #{v}"}.join(', ')
+    @menu.add_menu_item(user_message: object_to_s)
   end
   
   erb :menu_without_links
@@ -246,7 +248,8 @@ get "/get_movies_like_this/:something/:x" do
   
   @menu = Menu.new("These are the movies that match this #{params["something"]}.")
   all_movies.each do |movie|
-    @menu.add_menu_item(user_message: movie.to_s)
+    object_to_s = movie.attributes.map{|k,v| "#{k}: #{v}"}.join(', ')
+    @menu.add_menu_item(user_message: object_to_s)
   end
   
   erb :menu_without_links

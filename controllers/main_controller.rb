@@ -43,14 +43,7 @@ get "/create/:something/:x" do
   @class_name = slash_to_class_names[params["something"]]
   
   # create an object so you can get its instance variables
-  @obj = @class_name.find(params["x"])
-  # get foreign key names in this object and all possible values of the foreign key
-  # @foreign_key_choices = []
-  # all_foreign_keys = @obj.foreign_keys
-  # all_foreign_keys.each do |foreign_key|
-  #   @foreign_key_choices << foreign_key.all_from_class
-  # end
-  
+  @obj = @class_name.find(params["x"])  
   erb :create
 end
 
@@ -60,13 +53,6 @@ get "/create/:something" do
   
   # create an object so you can get its instance variables
   @obj = @class_name.new()
-  # get foreign key names in this object and all possible values of the foreign key
-  # @foreign_key_choices = []
-  # all_foreign_keys = @obj.foreign_keys
-  # all_foreign_keys.each do |foreign_key|
-  #   @foreign_key_choices << foreign_key.all_from_class
-  # end
-  
   erb :create
 end
 
@@ -79,11 +65,6 @@ post "/submit/:something" do
       @message = "Successfully saved!"
       erb :message
     else
-      # @foreign_key_choices = []
-      # all_foreign_keys = @obj.foreign_keys
-      # all_foreign_keys.each do |foreign_key|
-      #   @foreign_key_choices << foreign_key.all_from_class
-      # end 
       erb :create
     end
   else
@@ -93,11 +74,6 @@ post "/submit/:something" do
       @message = "Successfully saved!"
       erb :message
     else
-      # @foreign_key_choices = []
-      # all_foreign_keys = @obj.foreign_keys
-      # all_foreign_keys.each do |foreign_key|
-      #   @foreign_key_choices << foreign_key.all_from_class
-      # end
       erb :create
     end
   end  
@@ -105,10 +81,7 @@ end
 
 
 get "/show/:something" do
-
   @class_name = slash_to_class_names[params["something"]]
-  ()
-  
   @menu = user_choice_of_object_in_class(@class_name)
   @menu.title = "Here are all the #{params["something"].pluralize}."
   erb :menu_without_links
@@ -158,9 +131,7 @@ end
 
 get "/get_time_location/:something" do
  
-  @class_name = slash_to_class_names[params["something"]]
-  #params["something"] = "get_time_location_for_movie"
-  ()  
+  @class_name = slash_to_class_names[params["something"]] 
   @menu = user_choice_of_object_in_class(@class_name)
   @menu.title = "Which #{@class_name} do you want time/location information for?"
   erb :menu
@@ -213,13 +184,13 @@ end
 
 get "/get_sold_time_locations/:x" do
   if params["x"] == "sold_out"
-    @obj = LocationTime.where_sold_out(true)
+    @objects = LocationTime.where_sold_out(true)
   else
-    @obj = LocationTime.where_sold_out(false)
+    @objects = LocationTime.where_sold_out(false)
   end
   
   @menu = Menu.new("The #{params["x"]} times and locations are:")
-  @obj.location_times.each do |lt|
+  @objects.each do |lt|
     object_to_s = lt.attributes.map{|k,v| "#{k}: #{v}"}.join(', ')
     @menu.add_menu_item(user_message: object_to_s)
   end
@@ -237,7 +208,6 @@ end
 
 get "/get_movies_like_this/:something" do
   @class_name = slash_to_class_names[params["something"]]
-  ()  
   @menu = user_choice_of_object_in_class(@class_name)
   @menu.title = "Which #{@class_name} do you want to look up?"
   erb :menu
@@ -258,7 +228,6 @@ end
 
 get "/get_num_staff_needed" do
   @class_name = TimeSlot
-  ()  
   @menu = user_choice_of_object_in_class(@class_name)
   @menu.title = "Which #{@class_name} do you want to look up the number of staff for?"
   params["something"] = "get_num_staff_needed"

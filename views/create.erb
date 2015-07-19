@@ -1,15 +1,17 @@
 
 <!--display errors -->
 <ul>
-<% @obj.errors.each do |error| %>
-  <li><%= error.message %></li>
+<% @obj.errors.messages.each do |k, v| %>
+  <% v.each do |message| %>
+    <li><%= "#{k} #{message}"%></li>
+  <% end %>
 <% end %>  
 </ul>
 
-<form id="form" action="/<%= @class_name.name.downcase %>/submit" method="post">
+<form id="form" action="/submit/<%= @class_name.name.underscore %>" method="post">
 
 <!--Add hidden id field -->
-  <input type="hidden" name="my_object[id]" value=<%= @obj.id %>></input>
+  <input type="hidden" name="my_object[id]" value='<%= @obj.id %>'></input>
   
   
 <!-- Display non_foreign_keys in their own input field -->

@@ -49,4 +49,28 @@ class LocationTime < ActiveRecord::Base
     end
   end
   
+  # returns all Locations with tickets greater than the number of tickets
+  #
+  # num_tickets    - Integer of the number of tickets sold
+  #
+  # returns an Array of LocationTime objects
+  def self.where_tickets_greater_than(num_tickets)
+    LocationTime.where_match("num_tickets_sold", num_tickets, ">")
+  end
+  
+  # returns Array of objects of the sold out or not sold out LocationTimes
+  #
+  # returns an Array
+  def self.where_sold_out(sold_out=true)
+    if sold_out
+     LocationTime.as_objects(CONNECTION.execute("SELECT * FROM locationtimes locationtime LEFT OUTER JOIN 
+     locations location ON location.id = locationtime.location_id WHERE location.num_seats <= 
+     locationtime.num_tickets_sold;"))
+   else
+     LocationTime.as_objects(CONNECTION.execute("SELECT * FROM locationtimes locationtime LEFT OUTER JOIN 
+     locations location ON location.id = locationtime.location_id WHERE location.num_seats > 
+     locationtime.num_tickets_sold;"))
+   end
+  end
+  
 end

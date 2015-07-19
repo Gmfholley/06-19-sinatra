@@ -17,6 +17,13 @@ get "/theatre" do
   erb :menu
 end
 
+
+get "/location" do
+  
+  @menu = theatre
+  @class_name = Location
+  erb :menu
+end
 get "/location_time" do
   
   @menu = location_time
@@ -80,8 +87,8 @@ post "/submit/:something" do
       erb :create
     end
   else
-    @obj = @class_name.find(params["id"].to_i)
-    @obj.update(params)
+    @obj = @class_name.find(params["my_object"]["id"].to_i)
+    @obj.update(params["my_object"])
     if @obj.save
       @message = "Successfully saved!"
       erb :message

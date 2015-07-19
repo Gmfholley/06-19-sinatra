@@ -21,6 +21,35 @@ class Location < ActiveRecord::Base
     errors
   end
   
+  # returns an Array of Locations that are available (ie - can be booked)
+  #
+  # returns Array
+  def self.where_available(available=true)
+    if available
+      location_hashes = ActiveRecord::Base.connection.execute("SELECT COUNT(*) Loc, *  FROM location_times OUTER JOIN 
+      locations ON location_times.location_id = locations.id GROUP BY locations.id, locations.name HAVING 
+      COUNT(*) < locations.num_time_slots;")
+    else
+      location_hashes = ActiveRecord::Base.connection.execute("SELECT COUNT(*) Loc, *  FROM location_times INNER JOIN 
+      locations ON location_times.location_id = locations.id GROUP BY locations.id, locations.name HAVING  
+      COUNT(*) >= locations.num_time_slots;")
+   end 
+  as_objects(location_hashes)
+  end
+  
+  # returns an Array of Objects from hashes
+  #
+  # array_of_hashes - Array of Hashes
+  #
+  # returns an Array of Objects
+  def as_objects(array_of_hashes)
+    objects = []
+    array_of_hashes.each do |hash|
+      objects << Location.new(hash)
+    end
+    objects
+  end
+  
   # if the number of staff is zero or below, it adds an error
   #
   # returns errors Array

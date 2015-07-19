@@ -63,14 +63,29 @@ class LocationTime < ActiveRecord::Base
   # returns an Array
   def self.where_sold_out(sold_out=true)
     if sold_out
-     LocationTime.as_objects(CONNECTION.execute("SELECT * FROM locationtimes locationtime LEFT OUTER JOIN 
-     locations location ON location.id = locationtime.location_id WHERE location.num_seats <= 
-     locationtime.num_tickets_sold;"))
+     LocationTime.as_objects(ActiveRecord::Base.connection.execute("SELECT * FROM location_times LEFT OUTER JOIN 
+     locations ON locations.id = location_times.location_id WHERE locations.num_seats <= 
+     location_times.num_tickets_sold;"))
    else
-     LocationTime.as_objects(CONNECTION.execute("SELECT * FROM locationtimes locationtime LEFT OUTER JOIN 
-     locations location ON location.id = locationtime.location_id WHERE location.num_seats > 
-     locationtime.num_tickets_sold;"))
+     LocationTime.as_objects(ActiveRecord::Base.connection.execute("SELECT * FROM location_times LEFT OUTER JOIN 
+     locations ON locations.id = location_times.location_id WHERE locations.num_seats > 
+     location_times.num_tickets_sold;"))
    end
+  end
+  
+  # returns an Array of Objects from hashes
+  #
+  # array_of_hashes - Array of Hashes
+  #
+  # returns an Array of Objects
+  def self.as_objects(array_of_hashes)
+    objects = []
+    array_of_hashes.each do |hash|
+      object = Location.new
+      object.attributes = hash.reject{|k,v| !object.attributes.keys.member?(k.to_s) }
+      objects << object
+    end
+    objects
   end
   
 end

@@ -4,7 +4,7 @@ get "/home" do
 end
 
 get "/movie" do
-  
+
   @menu = movie
   @class_name = Movie
   erb :menu
@@ -63,11 +63,10 @@ get "/create/:something" do
   erb :create
 end
 
-get "/submit/:something" do
+post "/submit/:something" do
   @class_name = slash_to_class_names[params["something"]]
-  
-  if params["id"] == ""
-    @obj = @class_name.new(params)
+  if params["my_object"]["id"] == ""
+    @obj = @class_name.new(params["my_object"])
   
     if @obj.save
       @message = "Successfully saved!"

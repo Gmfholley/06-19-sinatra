@@ -26,15 +26,15 @@ class Location < ActiveRecord::Base
   # returns Array
   def self.where_available(available=true)
     if available
-      location_hashes = ActiveRecord::Base.connection.execute("SELECT COUNT(*) Loc, *  FROM location_times OUTER JOIN 
-      locations ON location_times.location_id = locations.id GROUP BY locations.id, locations.name HAVING 
+      location_hashes = ActiveRecord::Base.connection.execute("SELECT COUNT(*) num_booked_time_slots, locations.id, locations.name, locations.num_seats, locations.num_staff, locations.num_time_slots  FROM locations LEFT OUTER JOIN 
+      location_times ON location_times.location_id = locations.id GROUP BY locations.id, locations.name HAVING 
       COUNT(*) < locations.num_time_slots;")
     else
-      location_hashes = ActiveRecord::Base.connection.execute("SELECT COUNT(*) Loc, *  FROM location_times INNER JOIN 
-      locations ON location_times.location_id = locations.id GROUP BY locations.id, locations.name HAVING  
+      location_hashes = ActiveRecord::Base.connection.execute("SELECT COUNT(*) num_booked_time_slots, locations.id, locations.name, locations.num_seats, locations.num_staff, locations.num_time_slots  FROM locations LEFT OUTER JOIN 
+      location_times ON location_times.location_id = locations.id GROUP BY locations.id, locations.name HAVING 
       COUNT(*) >= locations.num_time_slots;")
    end 
-  as_objects(location_hashes)
+   as_objects(location_hashes)
   end
   
   # returns an Array of Objects from hashes
@@ -42,10 +42,12 @@ class Location < ActiveRecord::Base
   # array_of_hashes - Array of Hashes
   #
   # returns an Array of Objects
-  def as_objects(array_of_hashes)
+  def self.as_objects(array_of_hashes)
     objects = []
     array_of_hashes.each do |hash|
-      objects << Location.new(hash)
+      object = Location.new
+      object.attributes = hash.reject{|k,v| !object.attributes.keys.member?(k.to_s) }
+      objects << object
     end
     objects
   end

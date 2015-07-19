@@ -11,7 +11,7 @@ class TimeSlot < ActiveRecord::Base
   # returns an Integer
   def num_staff_needed
     sum = 0
-    query_string = "SELECT SUM(locations.num_staff) FROM locationtimes INNER JOIN timeslots ON locationtimes.timeslot_id = timeslots.id INNER JOIN locations ON locationtimes.location_id = locations.id WHERE timeslots.id = #{@id} GROUP BY locationtimes.location_id;"
+    query_string = "SELECT SUM(locations.num_staff) FROM location_times INNER JOIN time_slots ON location_times.time_slot_id = time_slots.id INNER JOIN locations ON location_times.location_id = locations.id WHERE time_slots.id = #{@id} GROUP BY location_times.location_id;"
     staff_array = ActiveRecord::Base.connection.execute(query_string)
     staff_array.each do |hash|
       sum += hash["SUM(locations.num_staff)"]

@@ -189,14 +189,14 @@ end
 
 get "/get_available_locations/:something" do  
   if params["something"] == "available"
-    @obj = Location.where_available(true)
+    @locations = Location.where_available(true)
   else
-    @obj = Location.where_available(false)
+    @locations = Location.where_available(false)
   end
   
   @menu = Menu.new("The #{params["something"].humanize.downcase} times and locations are:")
-  @obj.location_times.each do |lt|
-    object_to_s = lt.attributes.map{|k,v| "#{k}: #{v}"}.join(', ')
+  @locations.each do |location|
+    object_to_s = location.attributes.map{|k,v| "#{k}: #{v}"}.join(', ')
     @menu.add_menu_item(user_message: object_to_s)
   end
   

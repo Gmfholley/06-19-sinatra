@@ -244,7 +244,7 @@ get "/get_movies_like_this/:something" do
 end
 
 get "/get_movies_like_this/:something/:x" do
-  all_movies = Movie.where_match("#{params["something"]}_id", params["x"].to_i, "==")
+  all_movies = Movie.where("#{params["something"]}_id": params["x"].to_i)
   
   @menu = Menu.new("These are the movies that match this #{params["something"]}.")
   all_movies.each do |movie|
